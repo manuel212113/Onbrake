@@ -1,0 +1,55 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OnBrake"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="OnBrake.UserControlInicio"
+             mc:Ignorable="d" 
+             Height="auto" Width="auto">
+    <Grid>
+
+        <materialDesign:TransitioningContent x:Name="TrainsitionigContentSlide" OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:0.8}" Margin="0,0,0,-193">
+            <Grid Width="678">
+                <Image Source="imagenes/onbrakefondo.jpg" HorizontalAlignment="Left" Height="384" Margin="68,-31,-92,0" VerticalAlignment="Top" Width="702" Stretch="Fill"/>
+                <Rectangle Fill="#FF1290CB" Margin="68,146,-92,0" Opacity="0.8" />
+                <Rectangle VerticalAlignment="Top" HorizontalAlignment="Center" Width="310" Height="165" Margin="31,-232,337,0" RenderTransformOrigin="0.5,0.5" Fill="#FF1290CB">
+                    <Rectangle.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleY="-1"/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+                <Rectangle VerticalAlignment="Top" HorizontalAlignment="Center" Width="328" Height="165" Margin="461,-230,-111,0" RenderTransformOrigin="0.5,0.5" Fill="#FF1290CB">
+                    <Rectangle.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleY="-1"/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+                <TextBlock FontSize="45" Margin="84,146,10,10" Foreground="White"><Run Text="Bienvenido al "/><LineBreak/><Run Text="Sistema"/><Run Text=" "/><Run Text="de"/><Run Text=" "/><Run Text="Administración"/><Run Text="  "/><Run/><LineBreak/><Run Text="OnBrake "/></TextBlock>
+                <Rectangle Width="600" Margin="84,332,-6,10" Fill="White" RenderTransformOrigin="0.5,0.5">
+                    <Rectangle.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleY="-1"/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+
+            </Grid>
+        </materialDesign:TransitioningContent>
+        <TextBlock HorizontalAlignment="Left" Margin="45,-231,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="54" Width="122" Foreground="White" FontFamily="Segoe UI Semilight" FontSize="32"><Run Text="Cliente"/><Run Text="s"/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="476,-231,0,0" TextWrapping="Wrap" Text="Contratos" VerticalAlignment="Top" Height="41" Width="159" Foreground="White" FontFamily="Segoe UI Semilight" FontSize="36"/>
+        <materialDesign:PackIcon Kind="UserBox" Width="129" Height="126" VerticalAlignment="Center" Margin="213,-212,0,246" Foreground="White"/>
+        <materialDesign:PackIcon Kind="Contract" Width="124" Height="126" VerticalAlignment="Center" Margin="662,-212,-108,246" Foreground="White"/>
+    </Grid>
+</UserControl>

@@ -1,0 +1,70 @@
+﻿<UserControl x:Class="OnBrake.UserControlAdmContratos"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:local="clr-namespace:OnBrake"
+             mc:Ignorable="d" 
+             Height="auto" Width="auto">
+
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="92*"/>
+        </Grid.ColumnDefinitions>
+
+        <materialDesign:TransitioningContent x:Name="TrainsitionigContentSlide" OpeningEffect="{materialDesign:TransitionEffect SlideInFromRight, Duration=0:0:0.8}" Margin="0,10,0,-203" Grid.ColumnSpan="2">
+            <Grid Width="678">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="47*"/>
+                    <ColumnDefinition Width="632*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock HorizontalAlignment="Left" Margin="177,-144,-14,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="54" Width="468" Foreground="#FF1289C0" FontSize="42" Grid.Column="1"><Run Text="Administ"/><Run Text="r"/><Run Text="a"/><Run Text="ci"/><Run Text="ó"/><Run Text="n Contrato"/></TextBlock>
+                <TextBox x:Name="txtRutCliente" MaxLength="9"  MouseLeave="TxtRutCliente_MouseLeave"   Text="" FontSize="27" Margin="10,10,378,498" Background="White" Foreground="Black" BorderBrush="#890A0A0A" Grid.ColumnSpan="2" materialDesign:TextFieldAssist.UnderlineBrush="DarkCyan" />
+                <TextBox x:Name="txtAsistentes" MaxLength="10"  Text="" FontSize="27" Margin="537,10,-207,498" Background="White" Foreground="Black" BorderBrush="#890A0A0A" materialDesign:TextFieldAssist.UnderlineBrush="DarkCyan" Grid.Column="1"/>
+                <Image  Source="imagenes/r_logo_transparent_background.png" VerticalAlignment="Top" Height="110" Margin="84,-140,459,0" Grid.Column="1"/>
+                <TextBox  x:Name="txtPersonalAdicional" Text="" FontSize="27" Margin="537,110,-207,398" Background="White" Foreground="Black" BorderBrush="#890A0A0A" materialDesign:TextFieldAssist.UnderlineBrush="DarkCyan" Grid.Column="1"/>
+                <TextBox x:Name="CombtipoCli" FontSize="15" FontFamily="Segoe UI" materialDesign:ComboBoxAssist.ShowSelectedItem="true" Grid.Column="1" Margin="537,260,-207,254" Background="White" Height="45" Foreground="#FF0078D7"></TextBox>
+
+                <ComboBox SelectionChanged="ComboTipoEvento_SelectionChanged" x:Name="ComboTipoEvento" Text="" FontSize="22" Margin="10,110,378,400" Background="White" Foreground="Black" BorderBrush="#FF090974"  Grid.ColumnSpan="2" materialDesign:TextFieldAssist.UnderlineBrush="DarkCyan"/>
+                <ComboBox SelectionChanged="ComboModalidad_SelectionChanged" x:Name="comboModalidad" Text="" FontSize="22" Margin="10,200,378,311" Background="White" Foreground="Black" Grid.ColumnSpan="2" materialDesign:TextFieldAssist.UnderlineBrush="DarkCyan"/>
+                <TextBox x:Name="txtValorTotal" Text="" FontSize="27" Margin="10,307,378,203" Background="White" Foreground="#FF080808" Grid.ColumnSpan="2" materialDesign:TextFieldAssist.UnderlineBrush="DarkCyan"/>
+                <Label Content="RUT:" FontSize="20" Foreground="#FF1289C0" Margin="10,-30,575,550" FontWeight="Bold" Grid.ColumnSpan="2" materialDesign:TextFieldAssist.UnderlineBrush="DarkCyan"/>
+                <Label Content="Asistentes:" FontSize="20" Foreground="#FF1289C0" Margin="537,-21,1,541" FontWeight="Bold" materialDesign:TextFieldAssist.UnderlineBrush="DarkCyan" Grid.Column="1"/>
+                <Label Content="Personal Adicional:" FontSize="20" Foreground="#FF1289C0" Margin="537,75,-101,445" FontWeight="Bold" materialDesign:TextFieldAssist.UnderlineBrush="DarkCyan" Grid.Column="1"/>
+                <Label Content="Observaciones:" FontSize="20" Foreground="#FF1289C0" Margin="537,222,-81,298" FontWeight="Bold" materialDesign:TextFieldAssist.UnderlineBrush="DarkCyan" Grid.Column="1"/>
+
+                <Label Content="Tipo Evento:" FontSize="20" Foreground="#FF1289C0" Margin="10,75,533,445" FontWeight="Bold" Grid.ColumnSpan="2"/>
+                <Label Content="Modalidad Evento:" FontSize="20" Foreground="#FF1289C0" Margin="10,164,459,356" FontWeight="Bold" Grid.ColumnSpan="2"/>
+                <Label Content="Valor Total:" FontSize="20" Foreground="#FF1289C0" Margin="10,267,533,253" FontWeight="Bold" Grid.ColumnSpan="2"/>
+                <Button x:Name="BtnConsultarPorRut" materialDesign:ButtonAssist.CornerRadius="4" Content="Consultar" FontSize="29" Grid.Column="1" Margin="258,8,214,500" Height="Auto" Background="#FF0078D7" Click="BtnConsultarPorRut_Click"></Button>
+                <Button x:Name="BtnAgregar"  materialDesign:ButtonAssist.CornerRadius="4" Content="Agregar" FontSize="29" Grid.Column="1" Margin="196,400,277,108" Height="Auto" Background="#FF0078D7"></Button>
+                <Button  x:Name="BtnActualizar" materialDesign:ButtonAssist.CornerRadius="4" Content="Actualizar" FontSize="29" Grid.Column="1" Margin="377,400,76,108" Height="Auto" Background="#02C122"></Button>
+                <Button x:Name="BtnEliminar"  materialDesign:ButtonAssist.CornerRadius="4" Content="Eliminar" FontSize="29" Grid.Column="1" Margin="581,400,-128,108" Height="Auto" Background="#FFD30707"></Button>
+                <materialDesign:PackIcon Kind="IdCard" Margin="-50,10,0,0" Foreground="#FF0078D7" Height="47" Width="55"></materialDesign:PackIcon>
+                <materialDesign:PackIcon Kind="EventMultiple" Margin="-62,100,0,0" Foreground="#FF0078D7" Height="49" Width="63"/>
+                <materialDesign:PackIcon Kind="EventEdit" Margin="-62,187,0,0" Foreground="#FF0078D7" Height="57" Width="63"/>
+                <materialDesign:PackIcon Kind="AttachMoney" Margin="-62,295,0,0" Foreground="#FF0078D7" Height="57" Width="63"/>
+                <materialDesign:PackIcon Kind="UsersGroup" Margin="469,8,0,0" Foreground="#FF0078D7" Height="57" Width="63" Grid.Column="1"/>
+                <materialDesign:PackIcon Kind="UserAdd" Margin="469,100,0,0" Foreground="#FF0078D7" Height="57" Width="63" Grid.Column="1"/>
+                <materialDesign:PackIcon Kind="Eye" Margin="469,248,0,0" Foreground="#FF0078D7" Height="57" Width="63" Grid.Column="1"/>
+                <Controls:Flyout  Opacity="0.97" x:Name="flyoutConsulta" Visibility="Hidden"  Header="Cliente Agregado Correctamente" FontSize="30" Background="#FF0078D7" Position="Right" Width="471" IsOpen="False" Grid.Column="1" Margin="0,-140,-377,-40" Foreground="White">
+                    <Canvas Height="528" x:Name="CanvasFlyout">
+                        <materialDesign:PackIcon  x:Name="IconoFlyout" Kind="UserAdd" Width="260" Height="200" Canvas.Left="10"/>
+                        <TextBlock x:Name="txtFlyout" Visibility="Visible" FontSize="36" Foreground="White" HorizontalAlignment="Left" Width="260" Height="211" Canvas.Left="42" Canvas.Top="244"><Run Text="Cliente "/><LineBreak/><Run Text="Agregado"/><LineBreak/><Run Text="Exitosamente"/></TextBlock>
+                        <TextBox x:Name="TxtConsulta" Width="344" Background="White" Canvas.Left="60" Canvas.Top="428"></TextBox>
+                        <Button x:Name="boton_Consultar" Click="boton_Consultar_Click" Content="" Width="170" Canvas.Left="60" Canvas.Top="488" Height="40"></Button>
+                    </Canvas>
+                </Controls:Flyout>
+                <Button Click="BtnConsultarContrato_Click" x:Name="BtnConsultarContrato" materialDesign:ButtonAssist.CornerRadius="4" Content="Consultar Nro Contrato" FontSize="18" Margin="-27,400,459,108" Height="Auto" Background="#FF009CD7"  Grid.ColumnSpan="2"/>
+                <Button x:Name="BtnConsultarValorTotal" Click="BtnConsultarValorTotal_Click" materialDesign:ButtonAssist.CornerRadius="4" Content="Consultar" FontSize="29" Grid.Column="1" Margin="258,302,214,206" Height="Auto" Background="#FF0078D7" />
+
+
+            </Grid>
+        </materialDesign:TransitioningContent>
+    </Grid>
+
+</UserControl>
