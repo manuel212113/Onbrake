@@ -61,7 +61,7 @@ namespace OnBrake
 
                         var db = new OnBreakEntities();
 
-                        var usuario = db.Login.FirstOrDefault(u => u.Nombre_usuario == textUser.Text && u.Contraseña == textPassword.Password.ToString());
+                        var usuario = db.USUARIO.FirstOrDefault(u => u.nombre_usuario == textUser.Text && u.contraseña == textPassword.Password.ToString());
 
                         if (usuario != null)
                         {

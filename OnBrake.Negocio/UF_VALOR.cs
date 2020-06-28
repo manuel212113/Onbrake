@@ -33,20 +33,26 @@ namespace OnBrake
         }
         public void ObtenerResultadoUf( ref double ufv)
         {
-            InfoUf uf;
-            string fecha = System.DateTime.Now.ToString("dd-MM-yyyy");
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(@"https://www.mindicador.cl/api/uf/"+fecha);
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
+            try
             {
-                var json = reader.ReadToEnd();
-                 uf = JsonConvert.DeserializeObject<InfoUf>(json);
-                   ufv = uf.Serie[0].Valor;
-                
+                InfoUf uf;
+                string fecha = System.DateTime.Now.ToString("dd-MM-yyyy");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(@"https://www.mindicador.cl/api/uf/" + fecha);
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    var json = reader.ReadToEnd();
+                    uf = JsonConvert.DeserializeObject<InfoUf>(json);
+                    ufv = uf.Serie[0].Valor;
 
+
+                }
             }
-
+            catch(Exception e)
+            {
+                MessageBox.Show("ERROR AL OBTENER EL VALOR DE LA API");
+            }
         }
 
 

@@ -25,7 +25,7 @@ namespace OnBrake.Negocio.Tests
             double valor_uf = 28716.52;
             double valor_esperado = 0;
             valor_esperado = 9 * valor_uf;/*multiplicamos la cantidad de uf por su valor*/
-            calculosContrato.CalcularValorAdicionalContrato(asistentes,personalAdicional,valorbaseEvento, ref resultado);
+            calculosContrato.CalculoContratoCoffeBreak(asistentes,personalAdicional,valorbaseEvento, ref resultado);
             Assert.AreEqual(resultado, valor_esperado);
             
           

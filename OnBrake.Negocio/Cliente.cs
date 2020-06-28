@@ -97,10 +97,10 @@ namespace OnBrake.Negocio
 
             try
             {
-                /* Se obtiene el primer registro coincidente con el CODIGO MODELO */
+                /* Se obtiene el primer registro coincidente con el rut */
                 Datos.Cliente cli = bbdd.Cliente.First(e => e.RutCliente == RutCliente);
 
-                /* Se elimina el registro del EDM */
+                /* Se elimina el registro del  cliente*/
                 bbdd.Cliente.Remove(cli);
 
                 bbdd.SaveChanges();
@@ -210,7 +210,6 @@ namespace OnBrake.Negocio
             }
             catch (Exception ex)
             {
-                MessageBox.Show("ERROR:" + ex);
                 return new List<Cliente>();
             }
         }

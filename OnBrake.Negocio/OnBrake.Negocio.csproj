@@ -75,7 +75,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CalculosContrato.cs" />
+    <Compile Include="Cocktail.cs" />
+    <Compile Include="CoffeBreak.cs" />
+    <Compile Include="Contrato.cs" />
     <Compile Include="ModalidadServicio.cs" />
+    <Compile Include="TipoAmbientacion.cs" />
     <Compile Include="TipoEmpresa.cs" />
     <Compile Include="TipoEvento.cs" />
     <Compile Include="UF_VALOR.cs" />

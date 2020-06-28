@@ -4,17 +4,26 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="8526bb72ee984ecc9119ef38152830ec" Name="Diagram1" ZoomLevel="83">
-        <EntityTypeShape EntityType="OnBreakModel.ActividadEmpresa" Width="1.5" PointX="3.625" PointY="2.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="OnBreakModel.Cliente" Width="1.5" PointX="5.75" PointY="1.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="OnBreakModel.Contrato" Width="1.5" PointX="8" PointY="1.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="OnBreakModel.Login" Width="1.5" PointX="0.625" PointY="2.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="OnBreakModel.ModalidadServicio" Width="1.5" PointX="10.625" PointY="2.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="OnBreakModel.TipoEmpresa" Width="1.5" PointX="5.625" PointY="5.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="OnBreakModel.TipoEvento" Width="1.5" PointX="12.75" PointY="2.875" IsExpanded="true" />
+      <Diagram DiagramId="8bbb87ad0cda4712862d112662b4ba97" Name="Diagram1">
+        <EntityTypeShape EntityType="OnBreakModel.ActividadEmpresa" Width="1.5" PointX="0.75" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="OnBreakModel.Cenas" Width="1.5" PointX="7.5" PointY="4.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="OnBreakModel.Cliente" Width="1.5" PointX="3" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="OnBreakModel.Cocktail" Width="1.5" PointX="10.5" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="OnBreakModel.CoffeeBreak" Width="1.5" PointX="7.5" PointY="11.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="OnBreakModel.Contrato" Width="1.5" PointX="5.25" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="OnBreakModel.ModalidadServicio" Width="1.5" PointX="3" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="OnBreakModel.TipoAmbientacion" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="OnBreakModel.TipoEmpresa" Width="1.5" PointX="0.75" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="OnBreakModel.TipoEvento" Width="1.5" PointX="0.75" PointY="8.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="OnBreakModel.USUARIO" Width="1.5" PointX="7.75" PointY="1.125" IsExpanded="true" />
         <AssociationConnector Association="OnBreakModel.Cliente_ActividadEmpresa_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="OnBreakModel.Cena_TipoAmbientacion_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="OnBreakModel.Contrato_Cenas_FK1" ManuallyRouted="false" />
         <AssociationConnector Association="OnBreakModel.Cliente_TipoEmpresa_FK1" ManuallyRouted="false" />
         <AssociationConnector Association="OnBreakModel.Contrato_Cliente_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="OnBreakModel.Cocktail_TipoAmbientacion_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="OnBreakModel.Contrato_Cocktail_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="OnBreakModel.Contrato_CoffeeBreak_FK1" ManuallyRouted="false" />
         <AssociationConnector Association="OnBreakModel.Contrato_ModalidadEvento_FK1" ManuallyRouted="false" />
         <AssociationConnector Association="OnBreakModel.ModalidadServicio_TipoEvento_FK1" ManuallyRouted="false" />
       </Diagram>

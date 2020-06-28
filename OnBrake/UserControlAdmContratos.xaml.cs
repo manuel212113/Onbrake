@@ -1,8 +1,8 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using OnBrake.Negocio;
 
 namespace OnBrake
@@ -23,11 +24,24 @@ namespace OnBrake
     public partial class UserControlAdmContratos : UserControl
     {
         UserControlAdmiCliente cliente = new UserControlAdmiCliente();
+        CalculosContrato calculosContrato = new CalculosContrato();
         double valorBaseModalidad = 0;
+        int tipoEvento = 0;
+        int tipoAmbientacion = 0;
+        int uf_ambientacion = 0;
+        double valorfinal = 0;
+        DispatcherTimer DdispatcherTimer = new DispatcherTimer();
+          
+
+
         public UserControlAdmContratos()
         {
             InitializeComponent();
             CargarTipoEvento();
+            CargarTipoAmbientacion();
+            DdispatcherTimer.Interval = new TimeSpan(0, 0, 10);
+           
+
         }
 
 
@@ -48,6 +62,16 @@ namespace OnBrake
             ComboTipoEvento.SelectedValuePath = "IdTipoEvento";
 
             ComboTipoEvento.SelectedIndex = 0;
+        }
+
+        private void CargarTipoAmbientacion()
+        {
+            comboAmbientacion.ItemsSource = new TipoAmbientacion().ReadAll();
+
+            comboAmbientacion.DisplayMemberPath = "Descripcion";
+            comboAmbientacion.SelectedValuePath = "IdTipoAmbientacion";
+
+            comboAmbientacion.SelectedIndex = 0;
         }
 
         public void CargarModalidad(int IdTipoEvento)
@@ -71,70 +95,64 @@ namespace OnBrake
         }
 
 
-        public void CalcularValorAdicionalContrato(int cantAsis, int cantPersA)
+
+
+        public void TipoCalculoContrato(int tipoevento)
         {
-            UF_VALOR valoruf = new UF_VALOR();
-            double ufvalordia = 0;
-            valoruf.ObtenerResultadoUf(ref ufvalordia);
+            int CantPersonal = int.Parse(txtPersonalAdicional.Text);
+            int cantAsistentes = int.Parse(txtAsistentes.Text);
+            bool musicaAmbiental = false;
 
-
-            double valor_Asistente = 0;
-            double valor_personal = 0;
-
-            int CantAsistentes = cantAsis;
-            int cantPersonal = cantPersA;
-
-            if (CantAsistentes <= 20)
+            if (chkboxMusicaAmbiental.IsChecked == true)
             {
-                valor_Asistente = 3 * ufvalordia;
+                musicaAmbiental = true;
             }
-            else if (CantAsistentes > 20 && CantAsistentes < 51)
-            {
-                valor_Asistente = 5 * ufvalordia;
 
-            }
-            else if (CantAsistentes > 50)
+
+
+            switch (tipoevento)
             {
-                CantAsistentes = CantAsistentes - 50;
-                double porcentajeAdicional_asis = CantAsistentes * 0.1;
-                porcentajeAdicional_asis = porcentajeAdicional_asis + 5;
-                valor_Asistente = porcentajeAdicional_asis * ufvalordia;
+                case (10):
+                    calculosContrato.CalculoContratoCoffeBreak(cantAsistentes, CantPersonal, valorBaseModalidad, ref valorfinal);
+                    break;
+                case (20):
+                    calculosContrato.CalculoContratoCocktail(cantAsistentes, CantPersonal, valorBaseModalidad, ref valorfinal, musicaAmbiental, uf_ambientacion);
+                    break;
+                case (30):
+                    calculosContrato.CalculoContratoCena(cantAsistentes, CantPersonal, valorBaseModalidad, ref valorfinal, musicaAmbiental);
+                    break;
 
 
             }
-
-            if (cantPersonal == 2)
-            {
-                valor_personal = 2 * ufvalordia;
-
-            }
-            else if (cantPersonal == 3)
-            {
-                valor_personal = 3 * ufvalordia;
-            }
-
-            else if (cantPersonal == 4)
-            {
-                valor_personal = 3.5 * ufvalordia;
-            }
-            else if (cantPersonal > 4)
-            {
-                cantPersonal = cantPersonal - 4;
-                double porcentajeAdicional = cantPersonal * 0.5;
-                porcentajeAdicional = porcentajeAdicional + 3.5;
-                valor_personal = porcentajeAdicional * ufvalordia;
-
-            }
-
-            double valor_final = (valor_Asistente) + (valor_personal);
-            MessageBox.Show("valor calculado es: " + valor_final.ToString("#,##0.00"));
         }
 
+        public void DatosOpcionalesEventos(int tipoevento)
+        {
+            switch (tipoevento)
+            {
+                case (10):
+                    CkBoxVegetariano.Visibility = Visibility.Visible;
+                    chkboxMusicaAmbiental.Visibility = Visibility.Hidden;
+
+                    break;
+                case (20):
+                    CkBoxVegetariano.Visibility = Visibility.Hidden;
+                    CkBoxVegetariano.IsChecked = false;
+
+                    chkboxMusicaAmbiental.Visibility = Visibility.Visible;
+                    break;
+                case (30):
+                    CkBoxVegetariano.Visibility = Visibility.Hidden;
+                    CkBoxVegetariano.IsChecked = false;
+                    chkboxMusicaAmbiental.IsChecked = false;
+                    chkboxMusicaAmbiental.Visibility = Visibility.Visible;
+                    break;
 
 
+            }
 
 
-
+        }
 
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -142,82 +160,7 @@ namespace OnBrake
 
         }
 
-        private void CalcularTarifa_Click(object sender, RoutedEventArgs e)
-        {
-            UF_VALOR valoruf = new UF_VALOR();
-            double ufvalordia = 0;
-            valoruf.ObtenerResultadoUf(ref ufvalordia);
 
-            if (!txtAsistentes.Equals("") || !txtPersonalAdicional.Equals(""))
-            {
-                double valor_Asistente = 0;
-                double valor_personal = 0;
-
-                int CantAsistentes = int.Parse(txtAsistentes.Text);
-                int cantPersonal = int.Parse(txtPersonalAdicional.Text);
-
-                if (CantAsistentes <= 20)
-                {
-                    valor_Asistente = 3 * ufvalordia;
-                }
-                else if (CantAsistentes > 20 && CantAsistentes < 51)
-                {
-                    valor_Asistente = 5 * ufvalordia;
-
-                }
-                else if (CantAsistentes > 50)
-                {
-                    CantAsistentes = CantAsistentes - 50;
-                    double porcentajeAdicional_asis = 2;
-                    porcentajeAdicional_asis = porcentajeAdicional_asis + 5;
-                    valor_Asistente = porcentajeAdicional_asis * ufvalordia;
-
-
-                }
-
-                if (cantPersonal == 2)
-                {
-                    valor_personal = 2 * ufvalordia;
-
-                }
-                else if (cantPersonal == 3)
-                {
-                    valor_personal = 3 * ufvalordia;
-                }
-
-                else if (cantPersonal == 4)
-                {
-                    valor_personal = 3.5 * ufvalordia;
-                }
-                else if (cantPersonal > 4)
-                {
-                    cantPersonal = cantPersonal - 4;
-                    double porcentajeAdicional = cantPersonal * 0;
-                    porcentajeAdicional = porcentajeAdicional + 3.5;
-                    valor_personal = porcentajeAdicional * ufvalordia;
-
-                }
-
-                double valor_final = (valor_Asistente) + (valor_personal);
-                MessageBox.Show("valor calculado es: " + valor_final.ToString("#,##0.00"));
-            }
-            else if (txtAsistentes.Equals("0") || txtPersonalAdicional.Equals("0"))
-            {
-                MessageBox.Show("Debe Ingresar un valor mayor a cero");
-
-            }
-            else if (txtAsistentes.Equals("0") && txtPersonalAdicional.Equals("0"))
-            {
-                MessageBox.Show("Debe Ingresar un valor mayor a cero");
-            }
-            else if (txtAsistentes.Equals("") || txtPersonalAdicional.Equals(""))
-            {
-                MessageBox.Show("Los Campos asistentes y Personal Adicional no pueden estar Vacios");
-            }
-
-
-
-        }
 
         private void TxtAsistentes_KeyDown(object sender, KeyEventArgs e)
         {
@@ -232,15 +175,16 @@ namespace OnBrake
         private void BtnConsultarContrato_Click(object sender, RoutedEventArgs e)
         {
             TxtConsulta.Text = "";
+            TxtConsulta.Foreground = Brushes.Black;
             flyoutConsulta.IsOpen = true;
             TxtConsulta.Width = 250;
             TxtConsulta.Background = Brushes.White;
-            boton_Consultar.Content = "Buscar";
+            boton_ConsultarContrato.Content = "Buscar";
             txtFlyout.Text = "";
-            boton_Consultar.Visibility = Visibility.Visible;
-            Canvas.SetTop(boton_Consultar, 407);
-            Canvas.SetLeft(boton_Consultar, 80);
-
+            boton_ConsultarContrato.Visibility = Visibility.Visible;
+            Canvas.SetTop(boton_ConsultarContrato, 407);
+            Canvas.SetLeft(boton_ConsultarContrato, 80);
+            
             IconoFlyout.Kind = MaterialDesignThemes.Wpf.PackIconKind.Contract;
             Canvas.SetLeft(TxtConsulta, 42);
             Canvas.SetTop(TxtConsulta, 300);
@@ -256,11 +200,11 @@ namespace OnBrake
 
         private void BtnConsultarPorRut_Click(object sender, RoutedEventArgs e)
         {
-            string SelectedText = txtRutCliente.Text;
+
 
             Cliente cli = new Cliente()
             {
-                RutCliente = SelectedText
+                RutCliente = (txtRutCliente.Text)
             };
 
             if (cli.Read())
@@ -270,15 +214,20 @@ namespace OnBrake
                 IconoFlyout.Kind = MaterialDesignThemes.Wpf.PackIconKind.InformationCircle;
                 flyoutConsulta.IsOpen = true;
                 txtFlyout.Text = "Nombre Cliente:";
-                boton_Consultar.Visibility = Visibility.Hidden;
+                BtnConsultarContrato.Visibility = Visibility.Hidden;
                 TxtConsulta.Text = cli.NombreContacto;
+                TxtConsulta.IsEnabled = false;
                 TxtConsulta.Foreground = Brushes.Black;
                 Canvas.SetLeft(TxtConsulta, 42);
                 Canvas.SetTop(TxtConsulta, 300);
+
+
             }
             else
             {
                 MessageBox.Show("Cliente no Encontrado");
+
+
             }
         }
 
@@ -286,13 +235,15 @@ namespace OnBrake
         {
             if (ComboTipoEvento.SelectedValue != null)
             {
-                int tipoEvento = (int)ComboTipoEvento.SelectedValue;
+                tipoEvento = (int)ComboTipoEvento.SelectedValue;
 
+                DatosOpcionalesEventos(tipoEvento);
 
                 comboModalidad.ItemsSource = new ModalidadServicio().ReadByTipo(tipoEvento);
                 comboModalidad.SelectedValuePath = "IdModalidad";
                 comboModalidad.DisplayMemberPath = "Nombre";
                 comboModalidad.SelectedIndex = 0;
+
 
 
 
@@ -321,7 +272,6 @@ namespace OnBrake
                     txtValorTotal.Text = "$0";
                     var valorBaseS = (float)modalidad.ValorBase;
                     valorBaseModalidad = valorBaseS;
-                    MessageBox.Show("ValorBaseModalidad" + valorBaseModalidad);
 
                 }
 
@@ -336,44 +286,344 @@ namespace OnBrake
             {
 
             }
-            
+
             else if (string.IsNullOrEmpty(txtAsistentes.Text) && string.IsNullOrEmpty(txtPersonalAdicional.Text))
             {
-                    MessageBox.Show("Debes Rellenar Todos los Campos Asistentes y Personal Adicional");
+                MessageBox.Show("Debes Rellenar Todos los Campos Asistentes y Personal Adicional");
             }
-                else if (txtAsistentes.Text.Equals("0") || txtPersonalAdicional.Text.Equals("0"))
-                {
-                    MessageBox.Show("Debe Ingresar Valores superior a 0");
-                }
-                else if (txtPersonalAdicional.Text.Equals("0") && txtAsistentes.Text.Equals("0"))
+            else if (txtAsistentes.Text.Equals("0") || txtPersonalAdicional.Text.Equals("0"))
             {
-                    MessageBox.Show("Debe Ingresar Valores superior a 0");
-                }
+                MessageBox.Show("Debe Ingresar Valores superior a 0");
+            }
+            else if (txtPersonalAdicional.Text.Equals("0") && txtAsistentes.Text.Equals("0"))
+            {
+                MessageBox.Show("Debe Ingresar Valores superior a 0");
+            }
 
-            
+
             else
             {
-                 
-              int CantPersonal = int.Parse(txtPersonalAdicional.Text);
-              int cantAsistentes = int.Parse(txtAsistentes.Text);
 
-                if (cantAsistentes <=0 || CantPersonal <2)
+                int CantPersonal = int.Parse(txtPersonalAdicional.Text);
+                int cantAsistentes = int.Parse(txtAsistentes.Text);
+
+                if (cantAsistentes <= 1 || CantPersonal < 2)
+                {
+                    MessageBox.Show("Valores Fuera del Rango");
+                }
+                else if (cantAsistentes <= 1 && CantPersonal > 2)
                 {
                     MessageBox.Show("Valores Fuera del Rango");
                 }
                 else
                 {
 
+                    TipoCalculoContrato(tipoEvento);
 
-                    CalculosContrato calculosContrato = new CalculosContrato();
-
-                    double valorfinal = 0;
-                    calculosContrato.CalcularValorAdicionalContrato(cantAsistentes, CantPersonal, valorBaseModalidad, ref valorfinal);
                     txtValorTotal.Text = valorfinal.ToString("$#,##0.00");
                 }
 
-                
+
             }
         }
-    }
+
+        public void OcultarDatosPrincipales(bool visibilidad)
+        {
+            if (visibilidad == true)
+            {
+                /* CHECKBOX OPCIONALES*/
+                CkBoxVegetariano.Visibility = Visibility.Hidden;
+                chkboxMusicaAmbiental.Visibility = Visibility.Hidden;
+
+                /* Botones*/
+                BtnConsultarPorRut.Visibility = Visibility.Hidden;
+                BtnAgregarDatosExtra.Visibility = Visibility.Visible;
+                BtnEliminar.Visibility = Visibility.Hidden;
+                BtnConsultarContrato.Visibility = Visibility.Hidden;
+                BtnAgregar.Visibility = Visibility.Hidden;
+                BtnActualizar.Visibility = Visibility.Hidden;
+                /* Combobox*/
+                comboModalidad.Visibility = Visibility.Hidden;
+                ComboTipoEvento.Visibility = Visibility.Hidden;
+                /* CAMPOS DE TEXTO */
+                txtRutCliente.Visibility = Visibility.Hidden;
+                txtValorTotal.Visibility = Visibility.Hidden;
+                txtObservaciones.Visibility = Visibility.Hidden;
+                txtPersonalAdicional.Visibility = Visibility.Hidden;
+                txtAsistentes.Visibility = Visibility.Hidden;
+                comboAmbientacion.Visibility = Visibility.Visible;
+                TxtCabeceraContrato.Text = "Datos Adicionales";
+                txtsuperiorRut.Content = "Tipo Ambientacion";
+                /* ICONOS que cambian */
+                iconoTipoEvento.Kind = MaterialDesignThemes.Wpf.PackIconKind.EventNote;
+                iconoRut.Kind = MaterialDesignThemes.Wpf.PackIconKind.LocalRestaurant;
+                /* ICONOS OCULTOS */
+                iconoAsistentes.Visibility = Visibility.Hidden;
+                iconoModalidad.Visibility = Visibility.Hidden;
+                iconoValortotal.Visibility = Visibility.Hidden;
+                iconoPersonalAdi.Visibility = Visibility.Hidden;
+                iconoObservacion.Visibility = Visibility.Hidden;
+                /* texto superior */
+                txtsuperiorAsistentes.Visibility = Visibility.Hidden;
+                txtsuperiorObservaciones.Visibility = Visibility.Hidden;
+                txtsuperiorValor.Visibility = Visibility.Hidden;
+                txtsuperiorModalidad.Visibility = Visibility.Hidden;
+                txtsuperiorPersonalAD.Visibility = Visibility.Hidden;
+                BtnAtrasDatosAdicionales.Visibility = Visibility.Visible;
+                txtsuperiorTipoEvento.Content = "Lugar Evento";
+                comboAmbientacion.IsEnabled = true;
+                comboAmbientacion.SelectedIndex = 0;
+
+
+
+
+            }
+            else if (visibilidad == false)
+            {
+                bool checkeadoMusicaAmbiental = (bool)chkboxMusicaAmbiental.IsChecked;
+
+                DatosOpcionalesEventos(tipoEvento);
+
+
+                comboAmbientacion.IsEnabled = true;
+                comboAmbientacion.SelectedIndex = 0;
+                txtsuperiorTipoEvento.Content = "Tipo Evento";
+                chkboxLocal.Visibility = Visibility.Hidden;
+
+                txtAsistentes.Visibility = Visibility.Visible;
+                TxtConsulta.Visibility = Visibility.Visible;
+                BtnConsultarPorRut.Visibility = Visibility.Visible;
+                BtnAgregarDatosExtra.Visibility = Visibility.Hidden;
+                BtnActualizar.Visibility = Visibility.Visible;
+                TxtCabeceraContrato.Text = "Administracion Contrato";
+                ComboTipoEvento.Visibility = Visibility.Visible;
+                txtObservaciones.Visibility = Visibility.Visible;
+
+                txtsuperiorAsistentes.Visibility = Visibility.Visible;
+                txtsuperiorObservaciones.Visibility = Visibility.Visible;
+                txtsuperiorValor.Visibility = Visibility.Visible;
+                txtsuperiorModalidad.Visibility = Visibility.Visible;
+                txtsuperiorPersonalAD.Visibility = Visibility.Visible;
+
+
+                comboAmbientacion.Visibility = Visibility.Hidden;
+                BtnEliminar.Visibility = Visibility.Visible;
+                BtnConsultarContrato.Visibility = Visibility.Visible;
+                BtnAgregar.Visibility = Visibility.Visible;
+                txtRutCliente.Visibility = Visibility.Visible;
+
+                txtValorTotal.Visibility = Visibility.Visible;
+                comboModalidad.Visibility = Visibility.Visible;
+                /* iconos */
+                iconoTipoEvento.Kind = MaterialDesignThemes.Wpf.PackIconKind.EventMultiple;
+                iconoRut.Kind = MaterialDesignThemes.Wpf.PackIconKind.IdCard;
+                iconoAsistentes.Visibility = Visibility.Visible;
+                iconoModalidad.Visibility = Visibility.Visible;
+                iconoValortotal.Visibility = Visibility.Visible;
+                iconoPersonalAdi.Visibility = Visibility.Visible;
+                iconoObservacion.Visibility = Visibility.Visible;
+                iconoAsistentes.Visibility = Visibility.Visible;
+                iconoModalidad.Visibility = Visibility.Visible;
+                iconoValortotal.Visibility = Visibility.Visible;
+                iconoPersonalAdi.Visibility = Visibility.Visible;
+                iconoObservacion.Visibility = Visibility.Visible;
+                txtPersonalAdicional.Visibility = Visibility.Visible;
+                BtnAtrasDatosAdicionales.Visibility = Visibility.Hidden;
+
+
+                txtsuperiorRut.Content = "RUT";
+
+
+            }
+
+        }
+
+        private void BtnAgregar_Click(object sender, RoutedEventArgs e)
+        {
+            if (txtRutCliente.Text.Length > 0 || txtObservaciones.Text.Length > 0 || txtAsistentes.Text.Length > 0 || txtPersonalAdicional.Text.Length > 0)
+            {
+                Cliente cli = new Cliente()
+                {
+                    RutCliente = (txtRutCliente.Text)
+                };
+                /* solicita la informacion del cliente la cual sera desplegada en los campo de texto y combobox*/
+                if (cli.Read())
+                {
+
+
+
+
+                    if (tipoEvento == 10)
+                    {
+                        TipoCalculoContrato(tipoEvento);
+                        string numeroContrato = DateTime.Now.ToString("yyyyMMddHHmm");
+                        string fecha = System.DateTime.Now.ToString("dd-MM-yyyy");
+                        string hora = DateTime.Now.ToString("hh:mm:ss");
+
+                        Contrato Cont = new Contrato()
+                        {
+                            Numero = numeroContrato,
+                            Creacion = Convert.ToDateTime(fecha),
+                            Termino = Convert.ToDateTime(fecha),
+                            RutCliente = txtRutCliente.Text,
+                            IdModalidad = (string)comboModalidad.SelectedValue,
+                            IdTipoEvento = (int)ComboTipoEvento.SelectedValue,
+                            FechaHoraInicio = Convert.ToDateTime(hora),
+                            FechaHoraTermino = Convert.ToDateTime(hora),
+                            Asistentes = int.Parse(txtAsistentes.Text),
+                            PersonalAdicional = int.Parse(txtPersonalAdicional.Text),
+                            Realizado = false,
+                            ValorTotalContrato = valorfinal,
+                            Observaciones = txtObservaciones.Text
+                        };
+                        if (Cont.Create())
+                        {
+                            CoffeBreak coffe = new CoffeBreak()
+                            {
+                                Numero = numeroContrato,
+                                Vegetariana = (bool)CkBoxVegetariano.IsChecked
+                            };
+                            if (coffe.Create())
+                            {
+                                MessageBox.Show("Contrato Creado Correctamente");
+                            }
+                        }
+
+
+
+                    }
+                    else if (tipoEvento == 20)
+                    {
+
+                        txtsuperiorTipoEvento.Visibility = Visibility.Visible;
+                        chkboxLocal.Visibility = Visibility.Visible;
+                        
+                        OcultarDatosPrincipales(true);
+                        txtsuperiorTipoEvento.Visibility = Visibility.Hidden;
+                        chkboxLocal.Visibility = Visibility.Hidden;
+
+                    }
+                    else if (tipoEvento == 30)
+                    {
+                        
+                        OcultarDatosPrincipales(true);
+                        comboAmbientacion.SelectedIndex = 0;
+                        txtsuperiorTipoEvento.Visibility = Visibility.Visible;
+                        chkboxLocal.Visibility = Visibility.Visible;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("El Cliente que Intenta Agregar a el Contrato no Existe");
+                }
+            }
+
+
+
+
+
+
+
+        }
+
+        private void BtnAgregarDatosExtra_Click(object sender, RoutedEventArgs e)
+        {
+            TipoCalculoContrato(tipoEvento);
+            MessageBox.Show("el valor del Contrato Que se agregara sera de: "+valorfinal.ToString("$#,##0.00"));
+            OcultarDatosPrincipales(false);
+            Thread.Sleep(5000);
+            BtnAgregar.IsEnabled = false;
+          
+            {
+                string numeroContrato = DateTime.Now.ToString("yyyyMMddHHmm");
+                string fecha = System.DateTime.Now.ToString("dd-MM-yyyy");
+                string hora = DateTime.Now.ToString("hh:mm:ss");
+
+                Contrato Cont = new Contrato()
+                {
+                    Numero = numeroContrato,
+                    Creacion = Convert.ToDateTime(fecha),
+                    Termino = Convert.ToDateTime(fecha),
+                    RutCliente = txtRutCliente.Text,
+                    IdModalidad = (string)comboModalidad.SelectedValue,
+                    IdTipoEvento = (int)ComboTipoEvento.SelectedValue,
+                    FechaHoraInicio = Convert.ToDateTime(hora),
+                    FechaHoraTermino = Convert.ToDateTime(hora),
+                    Asistentes = int.Parse(txtAsistentes.Text),
+                    PersonalAdicional = int.Parse(txtPersonalAdicional.Text),
+                    Realizado = false,
+                    ValorTotalContrato = valorfinal,
+                    Observaciones = txtObservaciones.Text
+                };
+                if (Cont.Create())
+                {
+                    Cocktail cokta = new Cocktail()
+                    {
+                        Numero = numeroContrato,
+                        IdTipoAmbientacion = (int)comboAmbientacion.SelectedValue,
+                        Ambientacion = true,
+                        MusicaAmbiental = (bool)chkboxMusicaAmbiental.IsChecked,
+                        MusicaCliente = false
+                    };
+                    if (cokta.Create())
+                    {
+                        MessageBox.Show("Contrato Creado Correctamente");
+                    }
+                }
+                BtnAgregar.IsEnabled = true;
+            };
+
+        }
+
+        private void BtnAtrasDatosAdicionales_Click(object sender, RoutedEventArgs e)
+        {
+            OcultarDatosPrincipales(false);
+        }
+
+        private void ChkboxAmbientacionEvento_Click(object sender, RoutedEventArgs e)
+        {
+
+
+        }
+
+        private void ComboAmbientacion_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (comboAmbientacion.SelectedValue != null)
+            {
+                tipoAmbientacion = (int)ComboTipoEvento.SelectedValue;
+                if (tipoAmbientacion == 10)/* ambientacion basica*/
+                {
+                     uf_ambientacion = 2;
+                }else if (tipoAmbientacion == 20)/* ambientacion personalizada*/
+                {
+                     uf_ambientacion = 2;
+                }
+            }
+        }
+
+        private void Boton_ConsultarContrato_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtConsulta.Text.Length > 0)
+            {
+                Contrato cont = new Contrato()
+                {
+                    Numero = TxtConsulta.Text,
+                };
+                if (cont.Read())
+                {
+                    txtRutCliente.Text = cont.RutCliente.ToString();
+                    txtAsistentes.Text = cont.Asistentes.ToString();
+                    txtPersonalAdicional.Text = cont.PersonalAdicional.ToString();
+                    ComboTipoEvento.SelectedValue = cont.IdTipoEvento;
+                    comboModalidad.SelectedValue = cont.IdModalidad;
+                    txtValorTotal.Text = cont.ValorTotalContrato.ToString();
+                    txtObservaciones.Text = cont.Observaciones.ToString();
+                }
+                else
+                {
+                    MessageBox.Show(" Contrato No Encontrado");
+                }
+            }
+        }
+    } 
 }

@@ -1,12 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OnBrake.Negocio;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using OnBrake.Negocio;
 
 namespace OnBrake.Negocio.Tests
 {

@@ -12,10 +12,16 @@ namespace OnBrake.Datos
     using System;
     using System.Collections.Generic;
     
-    public partial class Login
+    public partial class Cenas
     {
-        public string id_usuario { get; set; }
-        public string Nombre_usuario { get; set; }
-        public string Contraseña { get; set; }
+        public string Numero { get; set; }
+        public int IdTipoAmbientacion { get; set; }
+        public bool MusicaAmbiental { get; set; }
+        public bool LocalOnBreak { get; set; }
+        public bool OtroLocalOnBreak { get; set; }
+        public double ValorArriendo { get; set; }
+    
+        public virtual TipoAmbientacion TipoAmbientacion { get; set; }
+        public virtual Contrato Contrato { get; set; }
     }
 }

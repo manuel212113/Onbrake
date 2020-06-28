@@ -251,6 +251,7 @@ namespace OnBrake
             /* solicita la informacion del cliente la cual sera desplegada en los campo de texto y combobox*/
             if (cli.Read())
             {
+                MessageBox.Show("Cliente Encontrado");
                 txtRazonSocialCli.Text = cli.RazonSocial;
                 txtNombreCli.Text = cli.NombreContacto;
                 txtemailCli.Text= cli.MailContacto;
@@ -258,7 +259,6 @@ namespace OnBrake
                 txtTelefonoCli.Text = cli.Telefono;
                 CombActividadCli.SelectedValue = cli.IdActividadEmpresa;
                 CombtipoCli.SelectedValue = cli.IdTipoEmpresa;
-                MessageBox.Show("Cliente Encontrado");
             }
             else
             {
@@ -275,18 +275,19 @@ namespace OnBrake
                 RutCliente = txtRutCli.Text,
             };
 
-            if (!cli.Delete())
-            {
-                MessageBox.Show("El Cliente no Existe");
-            }
+          
             MessageBoxResult eliminar = MessageBox.Show("¿Eliminar este Cliente", "Confirmar", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (eliminar == MessageBoxResult.Yes)
             {
-                    
-                
-                    /* Solicita la eliminación  del registro */
-                     if (cli.Delete())
+                txtDireccionCli.Text = string.Empty;
+                txtTelefonoCli.Text = string.Empty;
+                txtemailCli.Text = string.Empty;
+                txtRazonSocialCli.Text = string.Empty;
+                txtNombreCli.Text = string.Empty;
+
+                /* Solicita la eliminación  del registro */
+                if (cli.Delete())
                     {
 
                         var background = new BrushConverter();
