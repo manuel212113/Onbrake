@@ -22,16 +22,14 @@
                     <ColumnDefinition Width="8*"/>
                     <ColumnDefinition Width="105*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock HorizontalAlignment="Left" Margin="112.304,-144,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="54" Width="468" Foreground="#FF1289C0" FontSize="42" Grid.Column="1"><Run Text="Administ"/><Run Text="r"/><Run Text="a"/><Run Text="ci"/><Run Text="ó"/><Run Text="n C"/><Run Text="ontrato"/></TextBlock>
-                <DataGrid  MinWidth="{Binding ElementName=DataGridClientes, Path=ActualWidth}" MaxHeight="300" IsReadOnly="True"  AutoGenerateColumns="True" x:Name="DataGridClientes" Margin="0,120,-148,82" Grid.ColumnSpan="2" Foreground="Black" FontFamily="/OnBrake;component/Fonts/#Quicksand Bold" FontSize="16" Background="White" ></DataGrid>
-                <Image Source="imagenes/r_r_white_logo_color_background_1.jpg" VerticalAlignment="Top" Height="108" Margin="696.304,-144,-172,0" Grid.Column="1"/>
-                <TextBox  Text="" FontSize="27" Margin="319,8,10,500" Background="White" Foreground="Black" BorderBrush="#890A0A0A" materialDesign:TextFieldAssist.UnderlineBrush="DarkCyan" Grid.Column="1"/>
+                <TextBlock HorizontalAlignment="Left" Margin="112.304,-144,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="54" Width="468" Foreground="#FF1289C0" FontSize="42" Grid.Column="1"><Run Text="Listar"/><Run Text=" Clientes"/><Run Text=""/></TextBlock>
+                <DataGrid    MaxHeight="300" IsReadOnly="True"  AutoGenerateColumns="True" x:Name="DataGridClientes" Margin="0,120,-148,82" Grid.ColumnSpan="2" Foreground="Black" FontFamily="/OnBrake;component/Fonts/#Quicksand Bold" FontSize="16" Background="White" ></DataGrid>
+                <Image Source="imagenes/r_white_logo_transparent_background.png" VerticalAlignment="Top" Height="108" Margin="696.304,-144,-172,0" Grid.Column="1"/>
+                <TextBox x:Name="txtConsulta" KeyDown="TxtConsulta_KeyDown" Text="" FontSize="27" Margin="319,8,10,500" Background="White" Foreground="Black" BorderBrush="#890A0A0A" materialDesign:TextFieldAssist.UnderlineBrush="DarkCyan" Grid.Column="1"/>
                 <Label Content="Filtra Por:" FontSize="20" Foreground="#FF1289C0" Margin="10,-30,512,550" FontWeight="Bold" materialDesign:TextFieldAssist.UnderlineBrush="DarkCyan" Grid.ColumnSpan="2"/>
                 <Label Content="Tipo:" FontSize="20" Foreground="#FF1289C0" Margin="531.304,-21,6,541" FontWeight="Bold" materialDesign:TextFieldAssist.UnderlineBrush="DarkCyan" Grid.Column="1"/>
-                <Button  materialDesign:ButtonAssist.CornerRadius="4" Content="Consultar" FontSize="29" Margin="630,6,-159,502" Height="Auto" Background="#FF0078D7" Grid.Column="1"/>
                 <materialDesign:PackIcon Kind="Search" Margin="-50,10,0,0" Foreground="#FF0078D7" Height="47" Width="55"></materialDesign:PackIcon>
                 <ComboBox x:Name="COMBOTIPO" FontSize="23" Grid.ColumnSpan="2" Margin="10,10,422,498" Background="White" Foreground="#FF0078D7">
-                    <ComboBoxItem Content="Numero Contrato"/>
                     <ComboBoxItem IsSelected="True" Content="RUT"/>
                     <ComboBoxItem Content="Nombre"></ComboBoxItem>
                 </ComboBox>

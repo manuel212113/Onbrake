@@ -7,10 +7,12 @@ using System.Windows;
 
 namespace OnBrake.Negocio
 {
-   public class Contrato
+    public class Contrato
     {
-        /*Campo*/
-     
+        /*Conexion Base de datos (Patron Singleton)*/
+        Datos.OnBreakEntities bbdd = new Datos.OnBreakEntities();
+
+
         /*Propiedades de la entidad*/
         public string Numero { get; set; }
         public DateTime Creacion { get; set; }
@@ -31,9 +33,29 @@ namespace OnBrake.Negocio
 
 
 
-        /*propiedades Customizadas*/
-     
+        /*LISTA CONTRATO CON CAMPOS DE OTRAS TABLAS PARA MOSTRAR EN LA TABLA LISTAR CONTRATOS*/
 
+        public class ListaContrato
+        {
+            public string Numero { get; set; }
+            public DateTime Creacion { get; set; }
+            public DateTime Termino { get; set; }
+            public string RutCliente { get; set; }
+            public string Modalidad { get; set; }
+            public String TipoEvento { get; set; }
+            public DateTime FechaHoraInicio { get; set; }
+            public DateTime FechaHoraTermino { get; set; }
+            public int Asistentes { get; set; }
+            public int PersonalAdicional { get; set; }
+            public bool Realizado { get; set; }
+            public double ValorTotalContrato { get; set; }
+            public string Observaciones { get; set; }
+
+            public ListaContrato()
+            {
+
+            }
+        }
 
 
         public Contrato()
@@ -50,7 +72,7 @@ namespace OnBrake.Negocio
             IdModalidad = string.Empty;
             IdTipoEvento = 0;
             FechaHoraInicio = DateTime.MinValue;
-            FechaHoraTermino = DateTime.MinValue; 
+            FechaHoraTermino = DateTime.MinValue;
             Asistentes = 0;
             PersonalAdicional = 0;
             Realizado = false;
@@ -59,12 +81,11 @@ namespace OnBrake.Negocio
 
         }
 
-   
-  
+
+
 
         public bool Create()
         {
-            Datos.OnBreakEntities bbdd = new Datos.OnBreakEntities();
             Datos.Contrato Cont = new Datos.Contrato();
             try
             {
@@ -83,20 +104,23 @@ namespace OnBrake.Negocio
         }
         public bool Delete()
         {
-            Datos.OnBreakEntities bbdd = new Datos.OnBreakEntities();
 
             try
             {
-                /* Se obtiene el primer registro coincidente con el rut */
-                Datos.Contrato Cont = bbdd.Contrato.First(e => e.Numero == Numero);
-                CommonBC.Syncronize(this, Cont);
+                /* Se obtiene el primer registro coincidente con el numero */
 
 
-                /* Se elimina el registro del  cliente*/
+                var contrato = bbdd.Contrato.Where(s => s.Numero == Numero).First();
+
+                contrato.Realizado = true;
+
+                CommonBC.Syncronize(this, contrato);
 
                 bbdd.SaveChanges();
 
                 return true;
+
+
             }
             catch (Exception ex)
             {
@@ -104,10 +128,30 @@ namespace OnBrake.Negocio
                 return false;
             }
         }
-    
+
+        public bool Update()
+        {
+
+
+            try
+            {
+                Datos.Contrato cont = bbdd.Contrato.First(e => e.Numero == Numero);
+                CommonBC.Syncronize(this, cont);
+
+
+                bbdd.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
         public bool Read()
         {
-            Datos.OnBreakEntities bbdd = new Datos.OnBreakEntities();
 
             try
             {
@@ -116,7 +160,7 @@ namespace OnBrake.Negocio
 
                 /* Se copian las propiedades de datos al negocio */
                 CommonBC.Syncronize(Cont, this);
-              
+
                 return true;
             }
             catch (Exception ex)
@@ -133,7 +177,7 @@ namespace OnBrake.Negocio
 
                 Contrato negocio = new Contrato();
                 CommonBC.Syncronize(dato, negocio);
-             
+
 
                 listaNegocio.Add(negocio);
             }
@@ -142,7 +186,6 @@ namespace OnBrake.Negocio
         }
         public List<Contrato> ReadAll()
         {
-            Datos.OnBreakEntities bbdd = new Datos.OnBreakEntities();
 
             try
             {
@@ -162,22 +205,161 @@ namespace OnBrake.Negocio
             }
         }
 
-        public List<Contrato> ReadByNumero(string codigoTipo)
-        {
-            Datos.OnBreakEntities bbdd = new Datos.OnBreakEntities();
 
+
+
+        public List<ListaContrato> FiltroRut(string rut)
+        {
+            var co = from con in bbdd.Contrato
+                     join temp in bbdd.Cliente on con.RutCliente equals temp.RutCliente
+                     join mod in bbdd.ModalidadServicio on con.IdModalidad equals mod.IdModalidad
+                     join tip in bbdd.TipoEvento on con.IdTipoEvento equals tip.IdTipoEvento
+                     where con.RutCliente.StartsWith(rut)
+
+                     select new ListaContrato()
+                     {
+                         Numero = con.Numero,
+                         Creacion = con.Creacion,
+                         Termino = con.Termino,
+                         RutCliente = con.RutCliente,
+                         Modalidad = mod.Nombre,
+                         TipoEvento = tip.Descripcion,
+                         FechaHoraInicio = con.FechaHoraInicio,
+                         FechaHoraTermino = con.FechaHoraTermino,
+                         Asistentes = con.Asistentes,
+                         PersonalAdicional = con.PersonalAdicional,
+                         Realizado = con.Realizado,
+                         ValorTotalContrato = con.ValorTotalContrato,
+                         Observaciones = con.Observaciones
+
+                     };
+
+            return co.ToList();
+        }
+
+
+        public List<ListaContrato> FiltroTipoEvento(string tipo)
+        {
+            var co = from con in bbdd.Contrato
+                     join modal in bbdd.ModalidadServicio on con.IdModalidad equals modal.IdModalidad
+                     join tip in bbdd.TipoEvento on con.IdTipoEvento equals tip.IdTipoEvento
+                     where tip.Descripcion.StartsWith(tipo)
+
+                     select new ListaContrato()
+                     {
+                         Numero = con.Numero,
+                         Creacion = con.Creacion,
+                         Termino = con.Termino,
+                         RutCliente = con.RutCliente,
+                         Modalidad = modal.Nombre,
+                         TipoEvento = tip.Descripcion,
+                         FechaHoraInicio = con.FechaHoraInicio,
+                         FechaHoraTermino = con.FechaHoraTermino,
+                         Asistentes = con.Asistentes,
+                         PersonalAdicional = con.PersonalAdicional,
+                         Realizado = con.Realizado,
+                         ValorTotalContrato = con.ValorTotalContrato,
+                         Observaciones = con.Observaciones
+
+                     };
+
+            return co.ToList();
+        }
+
+        public List<ListaContrato> ReadByModalidad(string mod)
+        {
+            var cont = from contra in bbdd.Contrato
+                       join modal in bbdd.ModalidadServicio on contra.IdModalidad equals modal.IdModalidad
+                       join tip in bbdd.TipoEvento on contra.IdTipoEvento equals tip.IdTipoEvento
+                       where modal.Nombre.StartsWith(mod)
+
+                       select new ListaContrato()
+                       {
+                           Numero = contra.Numero,
+                           Creacion = contra.Creacion,
+                           Termino = contra.Termino,
+                           RutCliente = contra.RutCliente,
+                           Modalidad = modal.Nombre,
+                           TipoEvento = tip.Descripcion,
+                           FechaHoraInicio = contra.FechaHoraInicio,
+                           FechaHoraTermino = contra.FechaHoraTermino,
+                           Asistentes = contra.Asistentes,
+                           PersonalAdicional = contra.PersonalAdicional,
+                           Realizado = contra.Realizado,
+                           ValorTotalContrato = contra.ValorTotalContrato,
+                           Observaciones = contra.Observaciones
+
+                       };
+
+            return cont.ToList();
+        }
+
+
+        public List<ListaContrato> FiltroNumeroContrato(string num)
+        {
+            var co = from con in bbdd.Contrato
+                     join modal in bbdd.ModalidadServicio on con.IdModalidad equals modal.IdModalidad
+                     join tip in bbdd.TipoEvento on con.IdTipoEvento equals tip.IdTipoEvento
+                     where con.Numero.StartsWith(num)
+
+                     select new ListaContrato()
+                     {
+                         Numero = con.Numero,
+                         Creacion = con.Creacion,
+                         Termino = con.Termino,
+                         RutCliente = con.RutCliente,
+                         Modalidad = modal.Nombre,
+                         TipoEvento = tip.Descripcion,
+                         FechaHoraInicio = con.FechaHoraInicio,
+                         FechaHoraTermino = con.FechaHoraTermino,
+                         Asistentes = con.Asistentes,
+                         PersonalAdicional = con.PersonalAdicional,
+                         Realizado = con.Realizado,
+                         ValorTotalContrato = con.ValorTotalContrato,
+                         Observaciones = con.Observaciones
+
+                     };
+
+            return co.ToList();
+        }
+
+
+        public List<ListaContrato> ReadAllDescripcion()  //lista con la descripcion De Modalidad
+        {
             try
             {
-                List<Datos.Contrato> listaDatos =
-                    bbdd.Contrato.Where(b => b.Numero == Numero).ToList<Datos.Contrato>();
+                var c = from con in bbdd.Contrato
+                        join modal in bbdd.ModalidadServicio on con.IdModalidad equals modal.IdModalidad
+                        join tip in bbdd.TipoEvento on con.IdTipoEvento equals tip.IdTipoEvento
+                        join cli in bbdd.Cliente on con.RutCliente equals cli.RutCliente
 
-                List<Contrato> listaNegocio = GenerarListado(listaDatos);
-                return listaNegocio;
+                        select new ListaContrato()
+                        {
+
+                            Numero = con.Numero,
+                            Creacion = con.Creacion,
+                            Termino = con.Termino,
+                            RutCliente = con.RutCliente,
+                            Modalidad = modal.Nombre,
+                            TipoEvento = tip.Descripcion,
+                            FechaHoraInicio = con.FechaHoraInicio,
+                            FechaHoraTermino = con.FechaHoraTermino,
+                            Asistentes = con.Asistentes,
+                            PersonalAdicional = con.PersonalAdicional,
+                            Realizado = con.Realizado,
+                            ValorTotalContrato = con.ValorTotalContrato,
+                            Observaciones = con.Observaciones
+
+                        };
+                return c.ToList();
+
             }
             catch (Exception ex)
             {
-                return new List<Contrato>();
+                return null;
             }
         }
+
+       
     }
 }

@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using OnBrake.Negocio;
 
@@ -25,13 +16,27 @@ namespace OnBrake
     {
         UserControlAdmiCliente cliente = new UserControlAdmiCliente();
         CalculosContrato calculosContrato = new CalculosContrato();
+        DispatcherTimer DdispatcherTimer = new DispatcherTimer();
         double valorBaseModalidad = 0;
         int tipoEvento = 0;
         int tipoAmbientacion = 0;
         int uf_ambientacion = 0;
         double valorfinal = 0;
-        DispatcherTimer DdispatcherTimer = new DispatcherTimer();
-          
+        bool Contratorealizado = false;
+        /*variables para guardar Contrato Consultado*/
+        string Numero_C = string.Empty;
+        DateTime  Creacion_C = DateTime.MinValue;
+        DateTime  Termino_C = DateTime.MinValue;
+        string  RutCliente_C = string.Empty;
+        string   IdModalidad_C = string.Empty;
+        int  IdTipoEvento_C = 0;
+        DateTime FechaHoraInicio_C = DateTime.MinValue;
+        DateTime FechaHoraTermino_C = DateTime.MinValue; 
+        int  Asistentes_C = 0;
+        int   PersonalAdicional_C = 0;
+        bool  Realizado_C = true;
+        double   ValorTotalContrato_C = 0;
+        string   Observaciones_C = string.Empty;
 
 
         public UserControlAdmContratos()
@@ -39,14 +44,55 @@ namespace OnBrake
             InitializeComponent();
             CargarTipoEvento();
             CargarTipoAmbientacion();
-            DdispatcherTimer.Interval = new TimeSpan(0, 0, 10);
-           
+            CrearCarpetaRestauracion();
+
+            DdispatcherTimer.Interval = new TimeSpan(0, 0, 300);
+            DdispatcherTimer.Tick += (a, b) =>
+            {
+                SaveTotxtContrato();
+                MessageBox.Show("Se Ha Guardado un Respaldo del Contrato en la ruta C:/OnBrakeRecovery");
+            };
 
         }
 
 
 
 
+        public void CrearCarpetaRestauracion()
+        {
+            string ruta = @"C:\OnBrakeRecovery\";
+
+            if (!Directory.Exists(ruta))
+            {
+               MessageBox.Show("Se Creo una Carpeta que guardara los Contratos cada 5 Minutos si se Produce un Fallo en el Sistema");
+                DirectoryInfo di = Directory.CreateDirectory(ruta);
+            }
+            else
+            {
+                MessageBox.Show("El Directorio de Restauracion esta Creado y Puede contener Respaldos de Contratos");
+            }
+
+        }
+
+
+        public void SaveTotxtContrato()
+        {
+
+            string fecha = System.DateTime.Now.ToString("dd-MM-yyyy-");
+            string hora = System.DateTime.Now.ToString("hh-mm-ss");
+            string rutanombre = fecha + hora + "-CONTRATO.txt";
+            var dir = @"C:\OnBrakeRecovery\";
+            string ruta = System.IO.Path.Combine(dir, rutanombre);
+
+            using (TextWriter tw = new StreamWriter(ruta))
+            {
+                
+                
+                   tw.WriteLine(string.Format("{0} {1} {02} {03} {04} {05}", txtRutCliente, ComboTipoEvento.SelectedValue.ToString(),comboModalidad.SelectedValue.ToString(),txtAsistentes,txtPersonalAdicional,txtObservaciones));
+                
+            }
+
+        }
 
         private void BtnAgregarContrato_Click(object sender, RoutedEventArgs e)
         {
@@ -213,6 +259,7 @@ namespace OnBrake
                 flyoutConsulta.Header = "Informacion Cliente";
                 IconoFlyout.Kind = MaterialDesignThemes.Wpf.PackIconKind.InformationCircle;
                 flyoutConsulta.IsOpen = true;
+                boton_ConsultarContrato.Visibility = Visibility.Hidden ;
                 txtFlyout.Text = "Nombre Cliente:";
                 BtnConsultarContrato.Visibility = Visibility.Hidden;
                 TxtConsulta.Text = cli.NombreContacto;
@@ -531,7 +578,7 @@ namespace OnBrake
             TipoCalculoContrato(tipoEvento);
             MessageBox.Show("el valor del Contrato Que se agregara sera de: "+valorfinal.ToString("$#,##0.00"));
             OcultarDatosPrincipales(false);
-            Thread.Sleep(5000);
+           
             BtnAgregar.IsEnabled = false;
           
             {
@@ -611,6 +658,24 @@ namespace OnBrake
                 };
                 if (cont.Read())
                 {
+                    MessageBox.Show("Contrato Encontrado, se deplegara la informacion");
+                    flyoutConsulta.IsOpen = false;
+                    Numero_C =cont.Numero;
+                    Creacion_C = cont.Creacion;
+                    Termino_C = cont.Termino;
+                    RutCliente_C = cont.RutCliente;
+                    IdModalidad_C = cont.IdModalidad;
+                    IdTipoEvento_C = cont.IdTipoEvento;
+                    FechaHoraInicio_C = cont.FechaHoraInicio;
+                    FechaHoraTermino_C = cont.FechaHoraTermino;
+                    Asistentes_C = cont.Asistentes;
+                    PersonalAdicional_C = cont.PersonalAdicional;
+                    Realizado_C = cont.Realizado;
+                    ValorTotalContrato_C = cont.ValorTotalContrato;
+                    Observaciones_C = cont.Observaciones;
+
+
+                    /*valores a mostrar*/
                     txtRutCliente.Text = cont.RutCliente.ToString();
                     txtAsistentes.Text = cont.Asistentes.ToString();
                     txtPersonalAdicional.Text = cont.PersonalAdicional.ToString();
@@ -618,11 +683,93 @@ namespace OnBrake
                     comboModalidad.SelectedValue = cont.IdModalidad;
                     txtValorTotal.Text = cont.ValorTotalContrato.ToString();
                     txtObservaciones.Text = cont.Observaciones.ToString();
+                    Contratorealizado = cont.Realizado;
+
                 }
                 else
                 {
                     MessageBox.Show(" Contrato No Encontrado");
                 }
+            }
+        }
+
+        private void BtnActualizar_Click(object sender, RoutedEventArgs e)
+        {
+            if (!Realizado_C == true)
+            {
+                if (!Numero_C.Equals("") )
+                {
+                    if (PersonalAdicional_C == int.Parse(txtPersonalAdicional.Text) || Asistentes_C == int.Parse(txtAsistentes.Text))
+                    {
+
+
+                        Contrato cont = new Contrato()
+                        {
+                            Numero = Numero_C,
+                            RutCliente = txtRutCliente.Text,
+                            Asistentes = int.Parse(txtAsistentes.Text),
+                            PersonalAdicional = int.Parse(txtPersonalAdicional.Text),
+                            IdTipoEvento = (int)ComboTipoEvento.SelectedValue,
+                            IdModalidad = (string)comboModalidad.SelectedValue,
+                            ValorTotalContrato = double.Parse(txtValorTotal.Text),
+                            Observaciones = txtObservaciones.Text,
+                            Realizado = Contratorealizado
+                        };
+                        if (cont.Update())
+                        {
+                            MessageBox.Show("Contrato Actualizado");
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("el Contrato esta Realizado o no se ha consultado con el numero del Contrato ");
+                }
+            }
+            else
+            {
+                MessageBox.Show("El Contrato se Encuentra Finalizado");
+            }
+    }
+
+        private void BtnEliminar_Click(object sender, RoutedEventArgs e)
+        {
+            if (Numero_C.Length > 11)
+            {
+                try
+                {
+
+
+                    Contrato cont = new Contrato
+                    {
+                        Numero = Numero_C,
+                        FechaHoraInicio = FechaHoraInicio_C,
+                        Creacion = Creacion_C,
+                        FechaHoraTermino = FechaHoraTermino_C,
+                        Termino=Termino_C,
+                        RutCliente = RutCliente_C,
+                        Asistentes = Asistentes_C,
+                        PersonalAdicional = PersonalAdicional_C,
+                        IdTipoEvento = IdTipoEvento_C,
+                        IdModalidad = IdModalidad_C,
+                        ValorTotalContrato = ValorTotalContrato_C,
+                        Observaciones = Observaciones_C,
+                        Realizado = true,
+
+                    };
+                    if (cont.Update())
+                    {
+                        MessageBox.Show("Contrato: " + Numero_C + " fue terminado correctamente ");
+                    }
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show("error" + ex);
+                }
+              }
+            else
+            {
+                MessageBox.Show("Primero debe Consultar un Contrato para su posterior Termino");
             }
         }
     } 

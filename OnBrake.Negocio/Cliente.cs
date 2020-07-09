@@ -9,6 +9,9 @@ namespace OnBrake.Negocio
 {
     public class Cliente
     {
+
+        /*Conexion Base de datos (Patron Singleton)*/
+        Datos.OnBreakEntities bbdd = new Datos.OnBreakEntities();
         /*Campo*/
         string _descripcionEmpresa;
         string _descripcionTipo;
@@ -75,7 +78,6 @@ namespace OnBrake.Negocio
 
         public bool Create()
         {
-            Datos.OnBreakEntities bbdd = new Datos.OnBreakEntities();
             Datos.Cliente cli = new Datos.Cliente();
             try
             {
@@ -93,7 +95,6 @@ namespace OnBrake.Negocio
         }
         public bool Delete()
         {
-            Datos.OnBreakEntities bbdd = new Datos.OnBreakEntities();
 
             try
             {
@@ -117,7 +118,6 @@ namespace OnBrake.Negocio
         public bool Update()
         {
             
-                Datos.OnBreakEntities bbdd = new Datos.OnBreakEntities();
 
                 try
                 {
@@ -137,7 +137,6 @@ namespace OnBrake.Negocio
         }
         public bool Read()
         {
-            Datos.OnBreakEntities bbdd = new Datos.OnBreakEntities();
 
             try
             {
@@ -196,14 +195,33 @@ namespace OnBrake.Negocio
             }
         }
        
-        public List<Cliente> ReadByRut(string codigoTipo)
+        public List<Cliente> ReadByRut(string RUT)
         {
             Datos.OnBreakEntities bbdd = new Datos.OnBreakEntities();
 
             try
             {
                 List<Datos.Cliente> listaDatos =
-                    bbdd.Cliente.Where(b => b.RutCliente == RutCliente).ToList<Datos.Cliente>();
+                    bbdd.Cliente.Where(b=>b.RutCliente.StartsWith(RUT)).ToList<Datos.Cliente>();
+
+                List<Cliente> listaNegocio = GenerarListado(listaDatos);
+                return listaNegocio;
+            }
+            catch (Exception ex)
+            {
+                return new List<Cliente>();
+            }
+        }
+
+
+        public List<Cliente> ReadByNombre(string Nombre)
+        {
+            Datos.OnBreakEntities bbdd = new Datos.OnBreakEntities();
+
+            try
+            {
+                List<Datos.Cliente> listaDatos =
+                    bbdd.Cliente.Where(b => b.NombreContacto.StartsWith(Nombre)).ToList<Datos.Cliente>();
 
                 List<Cliente> listaNegocio = GenerarListado(listaDatos);
                 return listaNegocio;

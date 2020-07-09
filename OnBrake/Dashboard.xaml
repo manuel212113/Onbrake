@@ -91,9 +91,14 @@
                     </StackPanel>
                 </ListViewItem>
             </ListView>
+            <Image Source="imagenes/icons8_sun_star_50px.png" Margin="40,625,208,23"/>
+            <Image Source="imagenes/icons8_moon_50px_1.png" Width="40" Height="80" Margin="142,625,86,23"/>
+
 
         </Grid>
-        <ToggleButton x:Name="ColorButton" Width="200" Click="ColorButton_Click" Margin="23,614,503,0" Checked="ColorButton_Checked" Background="#FF1274AC"/>
+        <ToggleButton x:Name="ColorButton" Width="200" Click="ColorButton_Click" Margin="23,614,503,0" Checked="ColorButton_Checked" Background="#FF1274AC"
+                      ToolTip="Tema Dia/Noche"
+                      />
 
     </Grid>
 </Controls:MetroWindow>

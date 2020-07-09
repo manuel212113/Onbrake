@@ -59,6 +59,10 @@ namespace OnBrake
                     GridPrincipal.Children.Clear();
                     GridPrincipal.Children.Add(new UserControlListarClientes());
                     break;
+                case 4:
+                    GridPrincipal.Children.Clear();
+                    GridPrincipal.Children.Add(new UserControlListarContrato());
+                    break;
                 default:
                     break;
             }

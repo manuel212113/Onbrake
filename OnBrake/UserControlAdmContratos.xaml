@@ -90,8 +90,8 @@ Ambiental" Foreground="#FF0BC4CD" FontSize="12"
                 <Button x:Name="BtnAgregar"  materialDesign:ButtonAssist.CornerRadius="4" Content="Agregar" FontSize="29" Grid.Column="1" Margin="196,400,277,108" Height="Auto" Background="#FF0078D7" Click="BtnAgregar_Click"></Button>
                 <Button x:Name="BtnAgregarDatosExtra" Click="BtnAgregarDatosExtra_Click" Visibility="Hidden"  materialDesign:ButtonAssist.CornerRadius="4" Content="Confirmar" FontSize="22" Grid.Column="1" Margin="196,400,277,108" Height="Auto" Background="#FF0078D7"></Button>
 
-                <Button  x:Name="BtnActualizar" materialDesign:ButtonAssist.CornerRadius="4" Content="Actualizar" FontSize="29" Grid.Column="1" Margin="377,400,76,108" Height="Auto" Background="#02C122"></Button>
-                <Button x:Name="BtnEliminar"  materialDesign:ButtonAssist.CornerRadius="4" Content="Eliminar" FontSize="29" Grid.Column="1" Margin="581,400,-128,108" Height="Auto" Background="#FFD30707"></Button>
+                <Button  x:Name="BtnActualizar" Click="BtnActualizar_Click" materialDesign:ButtonAssist.CornerRadius="4" Content="Actualizar" FontSize="29" Grid.Column="1" Margin="377,400,76,108" Height="Auto" Background="#02C122"></Button>
+                <Button x:Name="BtnEliminar" Click="BtnEliminar_Click" materialDesign:ButtonAssist.CornerRadius="4" Content="Eliminar" FontSize="29" Grid.Column="1" Margin="581,400,-128,108" Height="Auto" Background="#FFD30707"></Button>
                 <materialDesign:PackIcon x:Name="iconoRut" Kind="IdCard" Margin="-50,10,0,0" Foreground="#FF0078D7" Height="47" Width="55"></materialDesign:PackIcon>
                 <materialDesign:PackIcon x:Name="iconoTipoEvento" Kind="EventMultiple" Margin="-62,100,0,0" Foreground="#FF0078D7" Height="49" Width="63"/>
                 <materialDesign:PackIcon x:Name="iconoModalidad" Kind="EventEdit" Margin="-62,187,0,0" Foreground="#FF0078D7" Height="57" Width="63"/>
