@@ -1,4 +1,4 @@
-# OnbrakeD
+# Proyecto de Gestor de Eventos Onbrake
 
 Version 1.0
 
@@ -13,7 +13,14 @@ Crear una tabla Login con la Siguiente Estructura
 /*Pronto*/
 
 Informacion
--El Modulo Administracion Cliente esta Completamente funcional 
+-El Modulo Administracion Cliente esta Completamente funcional
+
 -El modulo Administracion Contrato tiene los metodo creados pero los eventos aun estan en Desarrollo,Solo el Metodo calcular valor Contrato esta Funcional
+
 -El Modulo Listar Cliente esta en Construccion
+
+
 -El Modulo Listar Contrato esta en Construccion
+
+
+Imagenes
