@@ -1,6 +1,19 @@
 
 # Onbrake Event Manager Project 
 
+
+/* Intrucciones */
+
+lo unico que nesecitan es exportar la base de datos y cambiar el nombre del servidor de SQLSERVER en el appconfig de cada proyecto
+
+
+
+/ * Instructions * /
+
+the only thing they need is to export the database and change the name of the SQLSERVER server in the appconfig of each project
+
+
+
 /* EN */
 
 a project I did for the university implementing the orm Entitys Framework and the sqlserver database
